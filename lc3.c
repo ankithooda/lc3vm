@@ -5,64 +5,27 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-#define R_COUNT 10
-#define MEMORY_MAX (1 << 16)
-
-enum OPCODE {
-  BR,
-  ADD,
-  LD,
-  ST,
-  JSR,
-  AND,
-  LDR,
-  STR,
-  RTI,
-  NOT,
-  LDI,
-  STI,
-  JMP,
-  RES,
-  LEA,
-  TRAP
-};
-
-enum {
-  R0,
-  R1,
-  R2,
-  R3,
-  R4,
-  R5,
-  R6,
-  R7,
-  PC,
-  COND
-};
-
-enum {
-  FL_POS = 0,
-  FL_ZRO = 1,
-  FL_NEG = 2
-};
-
-uint16_t regs[R_COUNT];
-uint16_t memory[MEMORY_MAX];
-
+#include "lc3_hardware.h"
 
 void run_machine() {
   bool running = true;
   uint16_t curr_instruction;
   while ( running ) {
-    curr_instruction = regs[PC];
+    curr_instruction = regs[PC] >> 12;
 
-
+    switch( curr_instruction ) {
+    case OPCODE.ADD:
+      fprintf( stdout, "ADD Instruction\n" );
+      break;
+    default:
+      return;
+    }
   }
 }
 
 void halt_machine() {
-  ;
+  fprintf( stdout, "Halting\n" );
+  return;
 }
 
 int main( int argc, char **argv ) {
