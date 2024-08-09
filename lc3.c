@@ -11,10 +11,11 @@ void run_machine() {
   bool running = true;
   uint16_t curr_instruction;
   while ( running ) {
-    curr_instruction = regs[PC] >> 12;
+    curr_instruction = regs[ RPC ] >> 12;
 
     switch( curr_instruction ) {
-    case OPCODE.ADD:
+    case OP_ADD:
+      add( curr_instruction );
       fprintf( stdout, "ADD Instruction\n" );
       break;
     default:
@@ -54,7 +55,7 @@ int main( int argc, char **argv ) {
   }
 
   // Load PC and start machine
-  regs[PC] = pc_start;
+  regs[ RPC ] = pc_start;
 
   run_machine();
   halt_machine();

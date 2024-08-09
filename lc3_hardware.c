@@ -1,19 +1,20 @@
 #include <stdint.h>
+#include <stdlib.h>
 #include "lc3_hardware.h"
 
 /*
   The special register regs[ COND ] is updated
   after any register value is updated.
  */
-void update_flags( REG r ) {
+void update_flags( enum REG r ) {
   if ( regs[ r ] == 0 ) {
-    regs[ REG.COND ] = FLAG.ZRO;
+    regs[ RCOND ] = FL_ZRO;
 
   } else if ( regs[ r ] > 0 ) {
-    regs[ REG.COND ] = FLAG.POS;
+    regs[ RCOND ] = FL_POS;
 
   } else {
-    regs[ REG.COND ] = FLAG.NEG;
+    regs[ RCOND ] = FL_NEG;
 
   }
 }
@@ -29,6 +30,13 @@ int16_t extend_sign( int16_t value, uint8_t bit_count ) {
   return value;
 }
 
+/* Initialize Hardware */
+void initialize( void ) {
+  regs    = malloc(R_COUNT * sizeof(uint16_t));
+  memory  = malloc(MEMORY_MAX);
+}
+
+
 /////////////////////////////// Instructions ////////////////////////////
 
 /* The ADD instruction has two modes */
@@ -36,7 +44,7 @@ int16_t extend_sign( int16_t value, uint8_t bit_count ) {
 /* Register Mode - inst[0-2] are Second source register */
 /* Immediate Mode - inst[0-5] is an integer value */
 
-void add_inst( uint16_t inst ) {
+void add( uint16_t inst ) {
   uint16_t dr, sr1, sr2, mode;
   int16_t imm_value;
 
@@ -48,7 +56,7 @@ void add_inst( uint16_t inst ) {
   if ( mode ) {
 
     // Immediate mode
-    imm_value = extend_sign( inst & 0x1F );
+    imm_value = extend_sign( ( inst & 0x1F ), 5 );
     regs[ dr ] = regs[ sr1 ] + imm_value;
     update_flags( regs[ dr ] );
 

@@ -1,26 +1,25 @@
 #include <stdint.h>
 
-
 #define R_COUNT 10
 #define MEMORY_MAX (1 << 16)
 
 enum OPCODE {
-  BR     =  0,
-  ADD    =  1,
-  LD     =  2,
-  ST     =  3,
-  JSR    =  4,
-  AND    =  5,
-  LDR    =  6,
-  STR    =  7,
-  RTI    =  8,
-  NOT    =  9,
-  LDI    = 10,
-  STI    = 11,
-  JMP    = 12,
-  RES    = 13,
-  LEA    = 14,
-  TRAP   = 15
+  OP_BR     =  0,
+  OP_ADD    =  1,
+  OP_LD     =  2,
+  OP_ST     =  3,
+  OP_JSR    =  4,
+  OP_AND    =  5,
+  OP_LDR    =  6,
+  OP_STR    =  7,
+  OP_RTI    =  8,
+  OP_NOT    =  9,
+  OP_LDI    = 10,
+  OP_STI    = 11,
+  OP_JMP    = 12,
+  OP_RES    = 13,
+  OP_LEA    = 14,
+  OP_TRAP   = 15
 };
 
 enum REG {
@@ -32,17 +31,18 @@ enum REG {
   R5     = 5,
   R6     = 6,
   R7     = 7,
-  PC     = 8,
-  COND   = 9
+  RPC     = 8,
+  RCOND   = 9
 };
 
-enum FLAG {
-  ZRO = 0,
-  POS = 1,
-  NEG = 2
+enum FLAGS {
+  FL_ZRO = 0,
+  FL_POS = 1,
+  FL_NEG = 2
 };
 
-uint16_t regs[ R_COUNT ];
-uint16_t memory[ MEMORY_MAX ];
+static uint16_t *regs;
+static uint16_t *memory;
 
-void add_inst( uint16_t );           // ADD Instruction
+void initialize( void );                    // Initialize Hardware
+void add( uint16_t instruction );           // ADD Instruction
