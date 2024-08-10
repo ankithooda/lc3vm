@@ -44,5 +44,6 @@ enum FLAGS {
 static uint16_t *regs;
 static uint16_t *memory;
 
-void initialize( void );                    // Initialize Hardware
-void add( uint16_t instruction );           // ADD Instruction
+void initialize_hardware     ( void );                       // Initialize Hardware
+void debug_hardware          ( void );
+void add_instruction         ( uint16_t instruction );           // ADD Instruction

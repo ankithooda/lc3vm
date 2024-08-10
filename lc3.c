@@ -15,7 +15,7 @@ void run_machine() {
 
     switch( curr_instruction ) {
     case OP_ADD:
-      add( curr_instruction );
+      add_instruction( curr_instruction );
       fprintf( stdout, "ADD Instruction\n" );
       break;
     default:
@@ -54,11 +54,18 @@ int main( int argc, char **argv ) {
     exit( 3 );
   }
 
+  // Initialize hardware
+  initialize_hardware();
+
+  debug_hardware();
+
   // Load PC and start machine
   regs[ RPC ] = pc_start;
 
   run_machine();
   halt_machine();
+
+  debug_hardware();
 
   return 0;
 }

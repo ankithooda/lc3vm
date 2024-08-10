@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "lc3_hardware.h"
 
 /*
@@ -31,7 +32,7 @@ int16_t extend_sign( int16_t value, uint8_t bit_count ) {
 }
 
 /* Initialize Hardware */
-void initialize( void ) {
+void initialize_hardware( void ) {
   regs    = malloc(R_COUNT * sizeof(uint16_t));
   memory  = malloc(MEMORY_MAX);
 }
@@ -44,7 +45,7 @@ void initialize( void ) {
 /* Register Mode - inst[0-2] are Second source register */
 /* Immediate Mode - inst[0-5] is an integer value */
 
-void add( uint16_t inst ) {
+void add_instruction( uint16_t inst ) {
   uint16_t dr, sr1, sr2, mode;
   int16_t imm_value;
 
@@ -67,5 +68,10 @@ void add( uint16_t inst ) {
     regs[ dr ] = regs[ sr1 ] + regs[ sr2 ];
     update_flags( dr );
   }
+}
 
+void debug_hardware() {
+  for (uint8_t i = 0; i < R_COUNT; i++) {
+    printf("R%d - %d\n", i, regs[ i ] );
+  }
 }
