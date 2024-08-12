@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "lc3_hardware.h"
 
 /*
@@ -33,8 +34,44 @@ int16_t extend_sign( int16_t value, uint8_t bit_count ) {
 
 /* Initialize Hardware */
 void initialize_hardware( void ) {
-  regs    = malloc(R_COUNT * sizeof(uint16_t));
-  memory  = malloc(MEMORY_MAX);
+  regs    = (uint16_t *)malloc( R_COUNT * sizeof( uint16_t ) );
+  memory  = (uint8_t *)malloc( MEMORY_MAX * sizeof( uint8_t ) );
+}
+
+/* PC Counter and Memory helper functions */
+void set_pc( uint16_t value ) {
+  regs[ RPC ] = value;
+}
+
+uint16_t get_pc() {
+  return regs[ RPC ];
+}
+
+uint64_t get_memory_offset(uint16_t offset) {
+  return (uint64_t)( memory + offset );
+}
+
+/* Run Machine */
+void run_machine() {
+  bool running = true;
+  uint16_t curr_instruction;
+  while ( running ) {
+    curr_instruction = regs[ RPC ] >> 12;
+
+    switch( curr_instruction ) {
+    case OP_ADD:
+      add_instruction( curr_instruction );
+      fprintf( stdout, "ADD Instruction\n" );
+      break;
+    default:
+      return;
+    }
+  }
+}
+
+void halt_machine() {
+  fprintf( stdout, "Halting\n" );
+  return;
 }
 
 
@@ -71,7 +108,9 @@ void add_instruction( uint16_t inst ) {
 }
 
 void debug_hardware() {
-  for (uint8_t i = 0; i < R_COUNT; i++) {
-    printf("R%d - %d\n", i, regs[ i ] );
+  for (uint8_t i = 0; i < R_COUNT - 2; i++) {
+    printf( "R%d    - %d\n", i, regs[ i ] );
   }
+  printf( "RPC   - %d\n", regs[ RPC ] );
+  printf( "RCOND - %d\n", regs[ RCOND ] );
 }

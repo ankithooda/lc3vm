@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -7,31 +6,10 @@
 #include <unistd.h>
 #include "lc3_hardware.h"
 
-void run_machine() {
-  bool running = true;
-  uint16_t curr_instruction;
-  while ( running ) {
-    curr_instruction = regs[ RPC ] >> 12;
-
-    switch( curr_instruction ) {
-    case OP_ADD:
-      add_instruction( curr_instruction );
-      fprintf( stdout, "ADD Instruction\n" );
-      break;
-    default:
-      return;
-    }
-  }
-}
-
-void halt_machine() {
-  fprintf( stdout, "Halting\n" );
-  return;
-}
-
 int main( int argc, char **argv ) {
 
   uint16_t pc_start = 3000;
+  uint64_t memory_load_location = get_memory_offset( pc_start );
 
   if ( argc != 2 ) {
     fprintf( stdout, "lc3-vm <image>\n" );
@@ -47,7 +25,7 @@ int main( int argc, char **argv ) {
 
   int bytes_read;
 
-  bytes_read = read( fd, (void *)(memory + pc_start), MEMORY_MAX - pc_start );
+  bytes_read = read( fd, (void *)memory_load_location, MEMORY_MAX - pc_start );
 
   if ( bytes_read == -1 ) {
     fprintf( stderr, "Error: Could not read file\n" );
@@ -56,14 +34,15 @@ int main( int argc, char **argv ) {
 
   // Initialize hardware
   initialize_hardware();
+  fprintf( stdout, "Debug: Hardware Initialized\n" );
 
   debug_hardware();
+  fprintf( stdout, "Debug: Hardware Printed\n" );
 
   // Load PC and start machine
-  regs[ RPC ] = pc_start;
+  set_pc( pc_start );
 
   run_machine();
-  halt_machine();
 
   debug_hardware();
 
