@@ -41,15 +41,11 @@ enum FLAGS {
   FL_NEG = 2
 };
 
-static uint16_t *regs;
-static uint8_t *memory;
-
-
 void         initialize_hardware     ( void );                       // Initialize Hardware
 void         debug_hardware          ( void );
 void         run_machine             ( void );
 uint16_t     get_pc                  ( void );
 void         set_pc                  ( uint16_t value );
-uint64_t     get_memory_offset       ( uint16_t offset );
+void *       get_memory_offset       ( uint16_t offset );
 
 void         add_instruction         ( uint16_t instruction );           // ADD Instruction

@@ -4,6 +4,10 @@
 #include <stdbool.h>
 #include "lc3_hardware.h"
 
+uint16_t *regs;
+uint8_t *memory;
+
+
 /*
   The special register regs[ COND ] is updated
   after any register value is updated.
@@ -36,6 +40,9 @@ int16_t extend_sign( int16_t value, uint8_t bit_count ) {
 void initialize_hardware( void ) {
   regs    = (uint16_t *)malloc( R_COUNT * sizeof( uint16_t ) );
   memory  = (uint8_t *)malloc( MEMORY_MAX * sizeof( uint8_t ) );
+  regs[R0] = 12;
+  regs[R1] = 13;
+  regs[R3] = 7;
 }
 
 /* PC Counter and Memory helper functions */
@@ -47,16 +54,18 @@ uint16_t get_pc() {
   return regs[ RPC ];
 }
 
-uint64_t get_memory_offset(uint16_t offset) {
-  return (uint64_t)( memory + offset );
+void *get_memory_offset(uint16_t offset) {
+  return (void *)(memory + offset);
 }
 
 /* Run Machine */
-void run_machine() {
+void run_machine()
+{
   bool running = true;
   uint16_t curr_instruction;
   while ( running ) {
-    curr_instruction = regs[ RPC ] >> 12;
+    curr_instruction = memory[regs[ RPC ]] >> 12;
+    fprintf(stdout, "Curr - %d\n",curr_instruction);
 
     switch( curr_instruction ) {
     case OP_ADD:

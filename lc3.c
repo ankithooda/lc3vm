@@ -4,43 +4,46 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
+#include <errno.h>
 #include "lc3_hardware.h"
 
 int main( int argc, char **argv ) {
 
-  uint16_t pc_start = 3000;
-  uint64_t memory_load_location = get_memory_offset( pc_start );
+  uint16_t pc_start = 10;
+  void *memory_load_location;
+
+  // Initialize hardware
+  initialize_hardware();
+  fprintf( stdout, "Debug: Hardware Initialized\n" );
+  debug_hardware();
+
+  memory_load_location = get_memory_offset(pc_start);
 
   if ( argc != 2 ) {
     fprintf( stdout, "lc3-vm <image>\n" );
     exit( 1 );
   }
 
-  int fd = open( argv[1], O_RDONLY );
+  FILE *program = fopen(argv[1], "rb");
 
-  if ( fd == -1 ) {
-    fprintf( stderr, "Error: Could not open file\n" );
-    exit( 2 );
+  if (!program) {
+    fprintf(stderr, "Error: Could not open file - %s\n", strerror(errno));
+    exit(2);
   }
 
-  int bytes_read;
-
-  bytes_read = read( fd, (void *)memory_load_location, MEMORY_MAX - pc_start );
+  size_t bytes_read = fread((void *)memory_load_location, 2, 1000, program);
 
   if ( bytes_read == -1 ) {
-    fprintf( stderr, "Error: Could not read file\n" );
-    exit( 3 );
+    fprintf(stderr, "Error: Could not read file - %s\n", strerror(errno));
+    exit(3);
+  } else {
+    fprintf(stdout, "Program - %ld Byte(s) loaded\n", bytes_read);
   }
 
-  // Initialize hardware
-  initialize_hardware();
-  fprintf( stdout, "Debug: Hardware Initialized\n" );
-
-  debug_hardware();
-  fprintf( stdout, "Debug: Hardware Printed\n" );
 
   // Load PC and start machine
-  set_pc( pc_start );
+  set_pc(pc_start);
 
   run_machine();
 
