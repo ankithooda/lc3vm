@@ -36,9 +36,9 @@ enum REG {
 };
 
 enum FLAGS {
-  FL_ZRO = 0,
-  FL_POS = 1,
-  FL_NEG = 2
+  FL_ZRO = 1,
+  FL_POS = 2,
+  FL_NEG = 3
 };
 
 void         initialize_hardware     (void);                       // Initialize Hardware

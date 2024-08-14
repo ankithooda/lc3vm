@@ -82,6 +82,7 @@ void run_machine()
 
     switch(curr_instruction >> 12) {
     case OP_BR:
+      branch_instruction(curr_instruction);
       fprintf(stdout, "BR Instruction\n");
       break;
     case OP_ADD:
@@ -148,5 +149,10 @@ void add_instruction(uint16_t inst)
 
 void branch_instruction(uint16_t instruction)
 {
-
+  if (
+      (((instruction >> 11) & 0x1) && regs[RCOND] == FL_NEG) ||
+      (((instruction >> 10) & 0x1) && regs[RCOND] == FL_ZRO) ||
+      (((instruction >>  9) & 0x1) && regs[RCOND] == FL_POS)) {
+    regs[RPC] = regs[RPC] + extend_sign(instruction & 0x1FF, 9);
+  }
 }
