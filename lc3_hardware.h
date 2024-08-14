@@ -50,3 +50,4 @@ void *       get_memory_offset       (uint16_t offset);
 
 void         add_instruction         (uint16_t instruction);           // ADD Instruction
 void         branch_instruction      (uint16_t instruction);
+void         ld_instruction          (uint16_t instruction);

@@ -46,6 +46,8 @@ void initialize_hardware(void)
   regs[R0] = 12;
   regs[R1] = 13;
   regs[R3] = 7;
+  memory[52] = 333;
+  memory[51] = 444;
 }
 
 /* PC Counter and Memory helper functions */
@@ -77,7 +79,10 @@ void run_machine()
   bool running = true;
   uint16_t curr_instruction;
   while (running) {
-    curr_instruction = read_memory(regs[RPC]);
+    // We are incrementing regs[RPC] as we are reading the value.
+    // Instructions like LD add the offsets to the incremented PC.
+    // Not the PC which contained the LD instruction.
+    curr_instruction = read_memory(regs[RPC]++);
     fprintf(stdout, "Curr - %d\n",curr_instruction);
 
     switch(curr_instruction >> 12) {
@@ -89,10 +94,14 @@ void run_machine()
       add_instruction(curr_instruction);
       fprintf(stdout, "ADD Instruction\n");
       break;
+    case OP_LD:
+      ld_instruction(curr_instruction);
+      fprintf(stdout, "LD Instruction\n");
+      break;
     default:
       return;
     }
-    regs[RPC] = regs[RPC] + 1;
+    //regs[RPC] = regs[RPC] + 1;
     debug_hardware();
   }
 }
@@ -156,4 +165,14 @@ void branch_instruction(uint16_t instruction)
       (((instruction >>  9) & 0x1) && regs[RCOND] == FL_POS)) {
     regs[RPC] = regs[RPC] + extend_sign(instruction & 0x1FF, 9);
   }
+}
+
+void ld_instruction(uint16_t instruction)
+{
+  uint16_t dr, pc9offset;
+
+  dr = (instruction >> 9) & 0x7;
+  pc9offset = extend_sign(instruction & 0x1FF, 9);
+
+  regs[dr] = read_memory(regs[RPC] + pc9offset);
 }
