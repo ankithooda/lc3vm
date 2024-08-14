@@ -80,9 +80,7 @@ void run_machine()
     curr_instruction = read_memory(regs[RPC]);
     fprintf(stdout, "Curr - %d\n",curr_instruction);
 
-    curr_instruction = curr_instruction >> 12;
-
-    switch(curr_instruction) {
+    switch(curr_instruction >> 12) {
     case OP_BR:
       fprintf(stdout, "BR Instruction\n");
       break;
@@ -101,6 +99,17 @@ void halt_machine()
 {
   fprintf(stdout, "Halting\n");
   return;
+}
+
+
+
+void debug_hardware()
+{
+  for (uint8_t i = 0; i < R_COUNT - 2; i++) {
+    printf("R%d    - %d\n", i, regs[ i ]);
+  }
+  printf("RPC   - %d\n", regs[ RPC ]);
+  printf("RCOND - %d\n", regs[ RCOND ]);
 }
 
 
@@ -137,11 +146,7 @@ void add_instruction(uint16_t inst)
   }
 }
 
-void debug_hardware()
+void branch_instruction(uint16_t instruction)
 {
-  for (uint8_t i = 0; i < R_COUNT - 2; i++) {
-    printf("R%d    - %d\n", i, regs[ i ]);
-  }
-  printf("RPC   - %d\n", regs[ RPC ]);
-  printf("RCOND - %d\n", regs[ RCOND ]);
+
 }
