@@ -82,9 +82,9 @@ void run_machine()
 
     switch(curr_instruction >> 12) {
     case OP_BR:
-      branch_instruction(curr_instruction);
+      // branch_instruction(curr_instruction);
       fprintf(stdout, "BR Instruction\n");
-      break;
+      return;
     case OP_ADD:
       add_instruction(curr_instruction);
       fprintf(stdout, "ADD Instruction\n");
@@ -93,6 +93,7 @@ void run_machine()
       return;
     }
     regs[RPC] = regs[RPC] + 1;
+    debug_hardware();
   }
 }
 
@@ -136,7 +137,7 @@ void add_instruction(uint16_t inst)
     // Immediate mode
     imm_value = extend_sign((inst & 0x1F), 5);
     regs[dr] = regs[sr1] + imm_value;
-    update_flags(regs[ dr ]);
+    update_flags(regs[dr]);
 
   } else {
 
