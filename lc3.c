@@ -32,7 +32,7 @@ int main( int argc, char **argv ) {
     exit(2);
   }
 
-  size_t bytes_read = fread((void *)memory_load_location, 2, 1000, program);
+  size_t bytes_read = fread((void *)memory_load_location, sizeof(uint16_t), 1000, program);
 
   if ( bytes_read == -1 ) {
     fprintf(stderr, "Error: Could not read file - %s\n", strerror(errno));
