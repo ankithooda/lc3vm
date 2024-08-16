@@ -286,3 +286,26 @@ void ldr_instruction(uint16_t instruction)
   regs[dr] = memory[regs[base_r] + offset6];
   update_flags(dr);
 }
+
+
+void ldi_instruction(uint16_t instruction)
+{
+  uint16_t dr, pcoffset9;
+
+  dr        = (instruction >> 9) & 0x7;
+  pcoffset9 = extend_sign(instruction & 0x1FF, 9);
+  regs[dr]  = memory[memory[regs[RPC] + pcoffset9]];
+
+  update_flags(dr);
+}
+
+
+void sti_instruction(uint16_t instruction)
+{
+  uint16_t dr, pcoffset9;
+
+  sr        = (instruction >> 9) & 0x7;
+  pcoffset9 = extend_sign(instruction & 0x1FF, 9);
+  memory[memory[regs[RPC] + pcoffset9]] = regs[sr];
+
+}

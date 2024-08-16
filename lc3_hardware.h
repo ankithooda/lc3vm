@@ -57,3 +57,5 @@ void         add_instruction         (uint16_t instruction);
 void         not_instruction         (uint16_t instruction);
 void         str_instruction         (uint16_t instruction);
 void         ldr_instruction         (uint16_t instruction);
+void         ldi_instruction         (uint16_t instruction);
+void         sti_instruction         (uint16_t instruction);
