@@ -66,6 +66,11 @@ uint16_t read_memory(uint16_t address)
   return memory[address];
 }
 
+void write_memory(uint16_t address, uint16_t value)
+{
+  memory[address] = value;
+}
+
 /* Run Machine */
 void run_machine()
 {
@@ -177,5 +182,12 @@ void ld_instruction(uint16_t instruction)
 
 void st_instruction(uint16_t instruction)
 {
-  ;
+  uint16_t sr, pc9offset;
+
+  sr = (instruction >> 9) & 0x7;
+  pc9offset = extend_sign(instruction & 0x1FF, 9);
+
+  write_memory(regs[RPC] + pc9offset, regs[sr]);
+
+  update_flags(sr);
 }
