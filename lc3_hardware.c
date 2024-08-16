@@ -104,6 +104,14 @@ void run_machine()
       jsr_instruction(curr_instruction);
       fprintf(stdout, "JSR Instruction\n");
       break;
+    case OP_AND:
+      and_instruction(curr_instruction);
+      fprintf(stdout, "AND Instruction\n");
+      break;
+    case OP_NOT:
+      not_instruction(curr_instruction);
+      fprintf(stdout, "NOT Instruction\n");
+      break;
     default:
       return;
     }
@@ -153,15 +161,13 @@ void add_instruction(uint16_t inst)
     // Immediate mode
     imm_value = extend_sign((inst & 0x1F), 5);
     regs[dr] = regs[sr1] + imm_value;
-    update_flags(regs[dr]);
-
   } else {
 
     // Register Mode.
     sr2 = inst & 0x7;
     regs[dr] = regs[sr1] + regs[sr2];
-    update_flags(dr);
   }
+  update_flags(dr);
 }
 
 void branch_instruction(uint16_t instruction)
@@ -215,4 +221,43 @@ void jsr_instruction(uint16_t instruction)
     base_reg = (instruction >> 6) & 0x7;
     regs[RPC] = regs[base_reg];
   }
+}
+
+void and_instruction(uint16_t inst)
+{
+  uint16_t dr, sr1, sr2;
+  int16_t imm_value;
+
+  bool mode;
+
+  dr  = (inst >> 9) & 0x7;
+  sr1 = (inst >> 6) & 0x7;
+
+  mode = (inst >> 5) & 0x1;
+
+  if (mode) {
+
+    // Immediate mode
+    imm_value = extend_sign((inst & 0x1F), 5);
+    regs[dr] = regs[sr1] & imm_value;
+  } else {
+
+    // Register Mode.
+    sr2 = inst & 0x7;
+    regs[dr] = regs[sr1] & regs[sr2];
+  }
+  update_flags(dr);
+}
+
+
+void not_instruction(uint16_t instruction)
+{
+  uint16_t dr, sr;
+
+  dr = (instruction >> 9) & 0x7;
+  sr = (instruction >> 6) & 0x7;
+
+  regs[dr] = !regs[sr];
+
+  update_flags(dr);
 }
