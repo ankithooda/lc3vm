@@ -261,3 +261,28 @@ void not_instruction(uint16_t instruction)
 
   update_flags(dr);
 }
+
+
+void str_instruction(uint16_t instruction)
+{
+  uint16_t sr, base_r, offset6;
+
+  sr       = (instruction >> 9) & 0x7;
+  base_r   = (instruction >> 6) & 0x7;
+  offset6  = extend_sign(instruction & 0x1F, 6);
+
+  memory[regs[base_r] + offset6] = regs[sr];
+}
+
+
+void ldr_instruction(uint16_t instruction)
+{
+  uint16_t dr, base_r, offset6;
+
+  dr       = (instruction >> 9) & 0x7;
+  base_r   = (instruction >> 6) & 0x7;
+  offset6  = extend_sign(instruction & 0x1F, 6);
+
+  regs[dr] = memory[regs[base_r] + offset6];
+  update_flags(dr);
+}
