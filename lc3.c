@@ -16,7 +16,7 @@ uint16_t swap16(uint16_t value)
 int load_image_file(FILE *program)
 {
   uint16_t origin, program_sz;
-  void *load_location;
+  uint16_t *load_location;
 
   if (fread((void *)&origin, sizeof(uint16_t), 1, program) == -1) {
     return -1;
@@ -31,6 +31,12 @@ int load_image_file(FILE *program)
   if (words_read == -1) {
     return -1;
   } else {
+    // Swap each byte within each LC3 word.
+    for (uint16_t i = 0; i < words_read; i++) {
+      *load_location = swap16(*load_location);
+      load_location++;
+    }
+
     set_pc(origin);
     fprintf(stdout,
             "Program - %ld LC3 Machine Word(s) loaded at location %x\n",

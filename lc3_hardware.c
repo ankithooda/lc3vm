@@ -43,11 +43,6 @@ void initialize_hardware(void)
 {
   regs    = (uint16_t *)malloc(R_COUNT * sizeof(uint16_t));
   memory  = (uint16_t *)malloc(MEMORY_MAX * sizeof(uint16_t));
-  regs[R0] = 12;
-  regs[R1] = 13;
-  regs[R3] = 7;
-  memory[52] = 333;
-  memory[51] = 444;
 }
 
 /* PC Counter and Memory helper functions */
@@ -61,9 +56,9 @@ uint16_t get_pc()
   return regs[RPC];
 }
 
-void *get_memory_location(uint16_t offset)
+uint16_t *get_memory_location(uint16_t offset)
 {
-  return (void *)(memory + offset);
+  return memory + offset;
 }
 
 uint16_t read_memory(uint16_t address)

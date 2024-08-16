@@ -46,7 +46,7 @@ void         debug_hardware          (void);
 void         run_machine             (void);
 uint16_t     get_pc                  (void);
 void         set_pc                  (uint16_t value);
-void *       get_memory_location     (uint16_t offset);
+uint16_t     *get_memory_location    (uint16_t offset);
 
 void         add_instruction         (uint16_t instruction);           // ADD Instruction
 void         branch_instruction      (uint16_t instruction);
