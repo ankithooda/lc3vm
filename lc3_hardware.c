@@ -81,7 +81,7 @@ void run_machine()
     // Instructions like LD add the offsets to the incremented PC.
     // Not the PC which contained the LD instruction.
     curr_instruction = read_memory(regs[RPC]++);
-    fprintf(stdout, "Curr - %d\n",curr_instruction);
+    fprintf(stdout, "Curr Instruction - %d\n",curr_instruction);
 
     switch(curr_instruction >> 12) {
     case OP_BR:
@@ -99,6 +99,10 @@ void run_machine()
     case OP_ST:
       st_instruction(curr_instruction);
       fprintf(stdout, "ST Instruction\n");
+      break;
+    case OP_JSR:
+      jsr_instruction(curr_instruction);
+      fprintf(stdout, "JSR Instruction\n");
       break;
     default:
       return;
@@ -134,8 +138,10 @@ void debug_hardware()
 
 void add_instruction(uint16_t inst)
 {
-  uint16_t dr, sr1, sr2, mode;
+  uint16_t dr, sr1, sr2;
   int16_t imm_value;
+
+  bool mode;
 
   dr  = (inst >> 9) & 0x7;
   sr1 = (inst >> 6) & 0x7;
@@ -190,4 +196,23 @@ void st_instruction(uint16_t instruction)
   write_memory(regs[RPC] + pc9offset, regs[sr]);
 
   update_flags(sr);
+}
+
+void jsr_instruction(uint16_t instruction)
+{
+  uint16_t base_reg, pcoffset11;
+  bool mode;
+
+  regs[R7] = regs[RPC];
+
+  mode = (instruction >> 11) & 0x1;
+
+  // 11th bit is set -> PCOffset mode, otherwise base register mode.
+  if (mode) {
+    pcoffset11 = extend_sign(instruction & 0x7FF, 11);
+    regs[RPC] = regs[RPC] + pcoffset11;
+  } else {
+    base_reg = (instruction >> 6) & 0x7;
+    regs[RPC] = regs[base_reg];
+  }
 }

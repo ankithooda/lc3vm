@@ -52,3 +52,4 @@ void         add_instruction         (uint16_t instruction);           // ADD In
 void         branch_instruction      (uint16_t instruction);
 void         ld_instruction          (uint16_t instruction);
 void         st_instruction          (uint16_t instruction);
+void         jsr_instruction         (uint16_t instruction);

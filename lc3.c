@@ -39,11 +39,11 @@ int load_image_file(FILE *program)
 
     set_pc(origin);
     fprintf(stdout,
-            "Program - %ld LC3 Machine Word(s) loaded at location %x\n",
+            "Program - %ld LC3 Machine Word(s) loaded at location 0x%x\n",
             words_read,
             origin);
 
-    fprintf(stdout, "Program Counter set to %x\n", origin);
+    fprintf(stdout, "Program Counter set to 0x%x\n", origin);
     return 0;
   }
 }
