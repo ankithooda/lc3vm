@@ -61,16 +61,14 @@ uint16_t get_pc()
   return regs[RPC];
 }
 
-void *get_memory_offset(uint16_t offset)
+void *get_memory_location(uint16_t offset)
 {
   return (void *)(memory + offset);
 }
 
 uint16_t read_memory(uint16_t address)
 {
-  uint16_t value = memory[address];
-
-  return (value >> 8)|(value << 8);
+  return memory[address];
 }
 
 /* Run Machine */
@@ -98,10 +96,13 @@ void run_machine()
       ld_instruction(curr_instruction);
       fprintf(stdout, "LD Instruction\n");
       break;
+    case OP_ST:
+      st_instruction(curr_instruction);
+      fprintf(stdout, "ST Instruction\n");
+      break;
     default:
       return;
     }
-    //regs[RPC] = regs[RPC] + 1;
     debug_hardware();
   }
 }
@@ -175,4 +176,11 @@ void ld_instruction(uint16_t instruction)
   pc9offset = extend_sign(instruction & 0x1FF, 9);
 
   regs[dr] = read_memory(regs[RPC] + pc9offset);
+
+  update_flags(dr);
+}
+
+void st_instruction(uint16_t instruction)
+{
+  ;
 }
