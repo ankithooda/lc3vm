@@ -330,3 +330,15 @@ void lea_instruction(uint16_t instruction)
 
   update_flags(dr);
 }
+
+
+void trap_instruction(uint16_t instruction)
+{
+  uint16_t trap_vector;
+
+  regs[RPC] = regs[R7];
+
+  trap_vector = instruction & 0xFF;
+
+  regs[RPC] = read_memory(trap_vector);
+}

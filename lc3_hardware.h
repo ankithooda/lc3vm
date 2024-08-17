@@ -61,3 +61,4 @@ void         ldi_instruction         (uint16_t instruction);
 void         sti_instruction         (uint16_t instruction);
 void         jmp_instruction         (uint16_t instruction);
 void         lea_instruction         (uint16_t instruction);
+void         trap_instruction        (uint16_t instruction);
