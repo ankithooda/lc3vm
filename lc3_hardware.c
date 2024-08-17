@@ -74,20 +74,33 @@ void write_memory(uint16_t address, uint16_t value)
 /* Run Machine */
 void run_machine()
 {
-  bool running = true;
   uint16_t curr_instruction;
-  while (running) {
+  while (true) {
     // We are incrementing regs[RPC] as we are reading the value.
     // Instructions like LD add the offsets to the incremented PC.
     // Not the PC which contained the LD instruction.
     curr_instruction = read_memory(regs[RPC]++);
+
+    /*
+      Return if a ZERO instruction (where all bits are zero) is encountered.
+      ZERO instruction is technically a BR instruction which has
+      destination address as ZERO, it also does not specify any COND registers
+      to be checked thus effecitvely making it a NOOP instruction.
+
+      Instead of executign NOOPs and incrementing PC, we simply return and
+      halt the machine.
+     */
+    if (curr_instruction == 0) {
+      return;
+    }
+
     fprintf(stdout, "Curr Instruction - %d\n",curr_instruction);
 
     switch(curr_instruction >> 12) {
     case OP_BR:
-      // branch_instruction(curr_instruction);
+      branch_instruction(curr_instruction);
       fprintf(stdout, "BR Instruction\n");
-      return;
+      break;
     case OP_ADD:
       add_instruction(curr_instruction);
       fprintf(stdout, "ADD Instruction\n");
