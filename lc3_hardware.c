@@ -144,27 +144,26 @@ void debug_hardware()
 /* Register Mode - inst[0-2] are Second source register */
 /* Immediate Mode - inst[0-5] is an integer value */
 
-void add_instruction(uint16_t inst)
+void add_instruction(uint16_t instruction)
 {
   uint16_t dr, sr1, sr2;
   int16_t imm_value;
 
   bool mode;
 
-  dr  = (inst >> 9) & 0x7;
-  sr1 = (inst >> 6) & 0x7;
+  dr  = (instruction >> 9) & 0x7;
+  sr1 = (instruction >> 6) & 0x7;
 
-  mode = (inst >> 5) & 0x1;
+  mode = (instruction >> 5) & 0x1;
 
   if (mode) {
-
     // Immediate mode
-    imm_value = extend_sign((inst & 0x1F), 5);
+    imm_value = extend_sign((instruction & 0x1F), 5);
     regs[dr] = regs[sr1] + imm_value;
   } else {
 
     // Register Mode.
-    sr2 = inst & 0x7;
+    sr2 = instruction & 0x7;
     regs[dr] = regs[sr1] + regs[sr2];
   }
   update_flags(dr);
@@ -223,27 +222,27 @@ void jsr_instruction(uint16_t instruction)
   }
 }
 
-void and_instruction(uint16_t inst)
+void and_instruction(uint16_t instruction)
 {
   uint16_t dr, sr1, sr2;
   int16_t imm_value;
 
   bool mode;
 
-  dr  = (inst >> 9) & 0x7;
-  sr1 = (inst >> 6) & 0x7;
+  dr  = (instruction >> 9) & 0x7;
+  sr1 = (instruction >> 6) & 0x7;
 
-  mode = (inst >> 5) & 0x1;
+  mode = (instruction >> 5) & 0x1;
 
   if (mode) {
 
     // Immediate mode
-    imm_value = extend_sign((inst & 0x1F), 5);
+    imm_value = extend_sign((instruction & 0x1F), 5);
     regs[dr] = regs[sr1] & imm_value;
   } else {
 
     // Register Mode.
-    sr2 = inst & 0x7;
+    sr2 = instruction & 0x7;
     regs[dr] = regs[sr1] & regs[sr2];
   }
   update_flags(dr);
@@ -302,7 +301,7 @@ void ldi_instruction(uint16_t instruction)
 
 void sti_instruction(uint16_t instruction)
 {
-  uint16_t dr, pcoffset9;
+  uint16_t sr, pcoffset9;
 
   sr        = (instruction >> 9) & 0x7;
   pcoffset9 = extend_sign(instruction & 0x1FF, 9);

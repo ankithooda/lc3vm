@@ -1,3 +1,4 @@
+# GTAGS
 GTAGS
 GRTAGS
 GPATH
@@ -17,6 +18,7 @@ images
 *.ko
 *.obj
 *.elf
+*.sym
 
 # Linker output
 *.ilk
