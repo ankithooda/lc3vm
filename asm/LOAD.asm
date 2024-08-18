@@ -3,6 +3,6 @@
         ST    R7, MEM2
         LD    R6, MEM2
         MEM1  .FILL x0023         ; 35 in decimal
-        MEM2  .BLKW 1
+        MEM2  .BLKW 11
         .END
 

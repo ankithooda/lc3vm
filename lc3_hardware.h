@@ -35,10 +35,19 @@ enum REG {
   RCOND   = 9
 };
 
+/*
+  The values 1, 2, 5 are chosen to simplify the implementation
+  of BR instruction. See branch_instruction function
+  lc3_hardware.c
+
+  FL_POS - 001
+  FL_ZRO - 010
+  FL_NEG - 100
+ */
 enum FLAGS {
-  FL_ZRO = 1,
-  FL_POS = 2,
-  FL_NEG = 3
+  FL_POS = 1,
+  FL_ZRO = 2,
+  FL_NEG = 5
 };
 
 void         initialize_hardware     (void);                       // Initialize Hardware

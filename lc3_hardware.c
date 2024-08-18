@@ -22,7 +22,6 @@ void update_flags(enum REG r)
 
   } else {
     regs[RCOND] = FL_NEG;
-
   }
 }
 
@@ -184,10 +183,8 @@ void add_instruction(uint16_t instruction)
 
 void branch_instruction(uint16_t instruction)
 {
-  if (
-      (((instruction >> 11) & 0x1) && regs[RCOND] == FL_NEG) ||
-      (((instruction >> 10) & 0x1) && regs[RCOND] == FL_ZRO) ||
-      (((instruction >>  9) & 0x1) && regs[RCOND] == FL_POS)) {
+
+  if (((instruction >> 9) & 0x7) & regs[RCOND]) {
     regs[RPC] = regs[RPC] + extend_sign(instruction & 0x1FF, 9);
   }
 }
@@ -212,8 +209,6 @@ void st_instruction(uint16_t instruction)
   pc9offset = extend_sign(instruction & 0x1FF, 9);
 
   write_memory(regs[RPC] + pc9offset, regs[sr]);
-
-  update_flags(sr);
 }
 
 void jsr_instruction(uint16_t instruction)
@@ -221,6 +216,7 @@ void jsr_instruction(uint16_t instruction)
   uint16_t base_reg, pcoffset11;
   bool mode;
 
+  // Save PC to R7
   regs[R7] = regs[RPC];
 
   mode = (instruction >> 11) & 0x1;
