@@ -23,14 +23,14 @@ enum OPCODE {
 };
 
 enum REG {
-  R0     = 0,
-  R1     = 1,
-  R2     = 2,
-  R3     = 3,
-  R4     = 4,
-  R5     = 5,
-  R6     = 6,
-  R7     = 7,
+  R0      = 0,
+  R1      = 1,
+  R2      = 2,
+  R3      = 3,
+  R4      = 4,
+  R5      = 5,
+  R6      = 6,
+  R7      = 7,
   RPC     = 8,
   RCOND   = 9
 };
@@ -48,6 +48,15 @@ enum FLAGS {
   FL_POS = 1,
   FL_ZRO = 2,
   FL_NEG = 5
+};
+
+enum TRAP_CODE {
+  TRAP_GETC  = 0x20,
+  TRAP_OUT   = 0x21,
+  TRAP_PUT   = 0x22,
+  TRAP_IN    = 0x23,
+  TRAP_PUTSP = 0x24,
+  TRAP_HALT  = 0x25
 };
 
 void         initialize_hardware     (void);                       // Initialize Hardware

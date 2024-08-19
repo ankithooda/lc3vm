@@ -25,6 +25,7 @@ void update_flags(enum REG r)
   }
 }
 
+
 /* Extend Sign */
 int16_t extend_sign(int16_t value, uint8_t bit_count)
 {
@@ -37,6 +38,7 @@ int16_t extend_sign(int16_t value, uint8_t bit_count)
   return value;
 }
 
+
 /* Initialize Hardware */
 void initialize_hardware(void)
 {
@@ -44,31 +46,37 @@ void initialize_hardware(void)
   memory  = (uint16_t *)malloc(MEMORY_MAX * sizeof(uint16_t));
 }
 
+
 /* PC Counter and Memory helper functions */
 void set_pc(uint16_t value)
 {
   regs[RPC] = value;
 }
 
+
 uint16_t get_pc()
 {
   return regs[RPC];
 }
+
 
 uint16_t *get_memory_location(uint16_t offset)
 {
   return memory + offset;
 }
 
+
 uint16_t read_memory(uint16_t address)
 {
   return memory[address];
 }
 
+
 void write_memory(uint16_t address, uint16_t value)
 {
   memory[address] = value;
 }
+
 
 /* Run Machine */
 void run_machine()
@@ -167,12 +175,12 @@ void run_machine()
   }
 }
 
+
 void halt_machine()
 {
   fprintf(stdout, "Halting\n");
   return;
 }
-
 
 
 void debug_hardware()
@@ -217,6 +225,7 @@ void add_instruction(uint16_t instruction)
   update_flags(dr);
 }
 
+
 void branch_instruction(uint16_t instruction)
 {
 
@@ -225,6 +234,7 @@ void branch_instruction(uint16_t instruction)
   }
 
 }
+
 
 void ld_instruction(uint16_t instruction)
 {
@@ -238,6 +248,7 @@ void ld_instruction(uint16_t instruction)
   update_flags(dr);
 }
 
+
 void st_instruction(uint16_t instruction)
 {
   uint16_t sr, pc9offset;
@@ -247,6 +258,7 @@ void st_instruction(uint16_t instruction)
 
   write_memory(regs[RPC] + pc9offset, regs[sr]);
 }
+
 
 void jsr_instruction(uint16_t instruction)
 {
@@ -267,6 +279,7 @@ void jsr_instruction(uint16_t instruction)
     regs[RPC] = regs[base_reg];
   }
 }
+
 
 void and_instruction(uint16_t instruction)
 {
