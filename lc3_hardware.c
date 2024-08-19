@@ -120,9 +120,45 @@ void run_machine()
       and_instruction(curr_instruction);
       fprintf(stdout, "AND Instruction\n");
       break;
+    case OP_LDR:
+      ldr_instruction(curr_instruction);
+      fprintf(stdout, "LDR Instruction\n");
+      break;
+    case OP_STR:
+      str_instruction(curr_instruction);
+      fprintf(stdout, "STR Instruction\n");
+      break;
+    case OP_RTI:
+      fprintf(stdout, "RTI Instruction\n");
+      fprintf(stderr, "Invalid OPCODE RTI\n");
+      return;
     case OP_NOT:
       not_instruction(curr_instruction);
       fprintf(stdout, "NOT Instruction\n");
+      break;
+    case OP_LDI:
+      ldi_instruction(curr_instruction);
+      fprintf(stdout, "LDI Instruction\n");
+      break;
+    case OP_STI:
+      sti_instruction(curr_instruction);
+      fprintf(stdout, "STI Instruction\n");
+      break;
+    case OP_JMP:
+      jmp_instruction(curr_instruction);
+      fprintf(stdout, "JMP Instruction\n");
+      break;
+    case OP_RES:
+      fprintf(stdout, "RES Instruction\n");
+      fprintf(stderr, "Invalid OPCODE RES\n");
+      break;
+    case OP_LEA:
+      lea_instruction(curr_instruction);
+      fprintf(stdout, "LEA Instruction\n");
+      break;
+    case OP_TRAP:
+      trap_instruction(curr_instruction);
+      fprintf(stdout, "TRAP Instruction\n");
       break;
     default:
       return;
@@ -187,6 +223,7 @@ void branch_instruction(uint16_t instruction)
   if (((instruction >> 9) & 0x7) & regs[RCOND]) {
     regs[RPC] = regs[RPC] + extend_sign(instruction & 0x1FF, 9);
   }
+
 }
 
 void ld_instruction(uint16_t instruction)
