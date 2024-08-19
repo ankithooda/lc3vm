@@ -302,7 +302,7 @@ void not_instruction(uint16_t instruction)
   dr = (instruction >> 9) & 0x7;
   sr = (instruction >> 6) & 0x7;
 
-  regs[dr] = !regs[sr];
+  regs[dr] = ~regs[sr];
 
   update_flags(dr);
 }
