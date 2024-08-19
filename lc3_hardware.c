@@ -381,9 +381,7 @@ void trap_instruction(uint16_t instruction)
 {
   uint16_t trap_vector;
 
-  regs[RPC] = regs[R7];
-
+  regs[R7] = regs[RPC];
   trap_vector = instruction & 0xFF;
-
   regs[RPC] = read_memory(trap_vector);
 }
