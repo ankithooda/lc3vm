@@ -66,6 +66,58 @@ void write_memory(uint16_t address, uint16_t value)
 	memory[address] = value;
 }
 
+void trap_getc()
+{
+	regs[R0] = (uint16_t)getchar();
+	update_flags(R0);
+}
+
+void trap_out()
+{
+	putc((char)regs[R0], stdout);
+	fflush(stdout);
+}
+
+void trap_puts()
+{
+	uint16_t *c = memory[regs[R0]];
+	while (*c) {
+		putc((char *)c, stdout);
+		c++;
+	}
+	fflush(stdout);
+}
+
+void trap_in()
+{
+	fprintf(stdout, "> ");
+	char c = getchar();
+
+	putc(c, stdout);
+	fflush(stdout);
+
+	regs[R0] = (uint16_t)c;
+	update_flags(R0);
+}
+
+void trap_putsp()
+{
+	uint16_t *c = memory + reg[R_R0];
+	while (*c) {
+		char char1 = (*c) & 0xFF;
+		putc(char1, stdout);
+		char char2 = (*c) >> 8;
+		if (char2)
+			putc(char2, stdout);
+		++c;
+	}
+	fflush(stdout);
+}
+
+void trap_halt()
+{
+}
+
 /* Run Machine */
 void run_machine()
 {
@@ -77,14 +129,14 @@ void run_machine()
 		curr_instruction = read_memory(regs[RPC]++);
 
 		/*
-        Return if a ZERO instruction (where all bits are zero) is encountered.
-        ZERO instruction is technically a BR instruction which has
-        destination address as ZERO, it also does not specify any COND
-        registers to be checked thus effecitvely making it a NOOP instruction.
+                  Return if a ZERO instruction (where all bits are zero) is encountered.
+                  ZERO instruction is technically a BR instruction which has
+                  destination address as ZERO, it also does not specify any COND
+                  registers to be checked thus effecitvely making it a NOOP instruction.
 
-        Instead of executign NOOPs and incrementing PC, we simply return and
-        halt the machine.
-       */
+                  Instead of executign NOOPs and incrementing PC, we simply return and
+                  halt the machine.
+                */
 		if (curr_instruction == 0) {
 			return;
 		}
@@ -364,4 +416,20 @@ void trap_instruction(uint16_t instruction)
 	regs[R7] = regs[RPC];
 	trap_vector = instruction & 0xFF;
 	regs[RPC] = read_memory(trap_vector);
+
+	switch (instr & 0xFF) {
+	case TRAP_GETC:
+		@{ TRAP GETC } break;
+	case TRAP_OUT:
+		@{ TRAP OUT } break;
+	case TRAP_PUTS:
+		trap_puts();
+		break;
+	case TRAP_IN:
+		@{ TRAP IN } break;
+	case TRAP_PUTSP:
+		@{ TRAP PUTSP } break;
+	case TRAP_HALT:
+		@{ TRAP HALT } break;
+	}
 }
