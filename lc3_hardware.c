@@ -116,6 +116,9 @@ void trap_putsp()
 
 void trap_halt()
 {
+	fprintf(stdout, "\nHALTING\n");
+	fflush(stdout);
+	exit();
 }
 
 /* Run Machine */
@@ -138,7 +141,7 @@ void run_machine()
                   halt the machine.
                 */
 		if (curr_instruction == 0) {
-			return;
+			return 0;
 		}
 
 		fprintf(stdout, "Curr Instruction - %d\n", curr_instruction);
@@ -419,17 +422,22 @@ void trap_instruction(uint16_t instruction)
 
 	switch (instr & 0xFF) {
 	case TRAP_GETC:
-		@{ TRAP GETC } break;
+		trap_getc();
+		break;
 	case TRAP_OUT:
-		@{ TRAP OUT } break;
+		trap_out();
+		break;
 	case TRAP_PUTS:
 		trap_puts();
 		break;
 	case TRAP_IN:
-		@{ TRAP IN } break;
+		trap_in();
+		break;
 	case TRAP_PUTSP:
-		@{ TRAP PUTSP } break;
+		trap_putsp();
+		break;
 	case TRAP_HALT:
-		@{ TRAP HALT } break;
+		trap_halt();
+		break;
 	}
 }
