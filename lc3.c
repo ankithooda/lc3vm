@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+
 uint16_t swap16(uint16_t value)
 {
 	return (value >> 8) | (value << 8);
@@ -74,8 +75,5 @@ int main(int argc, char **argv)
 	}
 
 	run_machine();
-
-	// debug_hardware();
-
 	return 0;
 }

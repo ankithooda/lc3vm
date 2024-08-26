@@ -55,6 +55,14 @@ enum TRAP_CODE {
 	TRAP_HALT = 0x25
 };
 
+enum SPECIAL_REGS {
+	KBSR = 0xFE00,  /* Keyboard Status */
+	KBDR = 0xFE02,  /* Keyboard Data   */
+        DSSR = 0xFE04,  /* Display Status  */
+        DSDR = 0xFE06,  /* Display Data    */
+        MCR  = 0xFFFE   /* Machine Control */
+};
+
 void initialize_hardware(void); // Initialize Hardware
 void debug_hardware(void);
 void run_machine(void);

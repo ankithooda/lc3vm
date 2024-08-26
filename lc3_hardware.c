@@ -58,6 +58,10 @@ uint16_t *get_memory_location(uint16_t offset)
 
 uint16_t read_memory(uint16_t address)
 {
+	/* if (address == MR_KBSR) { */
+        /*   memory[MR_KBSR] = (1 << 15); */
+        /*   memory[MR_KBDR] = getchar(); */
+	/* } */
 	return memory[address];
 }
 
@@ -80,12 +84,12 @@ void trap_out()
 
 void trap_puts()
 {
-	uint16_t *c = memory[regs[R0]];
-	while (*c) {
-		putc((char *)c, stdout);
-		c++;
-	}
-	fflush(stdout);
+	/* uint16_t c = memory[regs[R0]]; */
+	/* while (c) { */
+	/* 	putc((char *)c, stdout); */
+	/* 	c++; */
+	/* } */
+	/* fflush(stdout); */
 }
 
 void trap_in()
@@ -102,7 +106,7 @@ void trap_in()
 
 void trap_putsp()
 {
-	uint16_t *c = memory + reg[R_R0];
+	uint16_t *c = memory + regs[R0];
 	while (*c) {
 		char char1 = (*c) & 0xFF;
 		putc(char1, stdout);
@@ -118,7 +122,7 @@ void trap_halt()
 {
 	fprintf(stdout, "\nHALTING\n");
 	fflush(stdout);
-	exit();
+	exit(0);
 }
 
 /* Run Machine */
@@ -141,7 +145,7 @@ void run_machine()
                   halt the machine.
                 */
 		if (curr_instruction == 0) {
-			return 0;
+			return;
 		}
 
 		fprintf(stdout, "Curr Instruction - %d\n", curr_instruction);
@@ -216,12 +220,6 @@ void run_machine()
 		}
 		debug_hardware();
 	}
-}
-
-void halt_machine()
-{
-	fprintf(stdout, "Halting\n");
-	return;
 }
 
 void debug_hardware()
@@ -420,7 +418,7 @@ void trap_instruction(uint16_t instruction)
 	trap_vector = instruction & 0xFF;
 	regs[RPC] = read_memory(trap_vector);
 
-	switch (instr & 0xFF) {
+	switch (instruction & 0xFF) {
 	case TRAP_GETC:
 		trap_getc();
 		break;
