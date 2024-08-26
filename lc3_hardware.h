@@ -1,6 +1,5 @@
 #include <stdint.h>
 
-#define R_COUNT 10
 #define MEMORY_MAX (1 << 16)
 
 enum OPCODE {
@@ -56,11 +55,11 @@ enum TRAP_CODE {
 };
 
 enum SPECIAL_REGS {
-	KBSR = 0xFE00,  /* Keyboard Status */
-	KBDR = 0xFE02,  /* Keyboard Data   */
-        DSSR = 0xFE04,  /* Display Status  */
-        DSDR = 0xFE06,  /* Display Data    */
-        MCR  = 0xFFFE   /* Machine Control */
+	KBSR = 0xFE00, /* Keyboard Status */
+	KBDR = 0xFE02, /* Keyboard Data   */
+	DSSR = 0xFE04, /* Display Status  */
+	DSDR = 0xFE06, /* Display Data    */
+	MCR = 0xFFFE /* Machine Control */
 };
 
 void initialize_hardware(void); // Initialize Hardware

@@ -7,5 +7,4 @@
         STR  R4, R1, 5
         TRAP x23                        ; 35
         TRAP_IN .FILL x1025          ; Add 5 to R
-        TRAP_ADDR .FILL x23
         .END

@@ -39,8 +39,8 @@ void initialize_hardware(void)
 	regs = (uint16_t *)malloc(R_COUNT * sizeof(uint16_t));
 	memory = (uint16_t *)malloc(MEMORY_MAX * sizeof(uint16_t));
 
-        // Set Machine Control Register
-        memory[MCR] = 0x8000;
+	// Set Machine Control Register
+	memory[MCR] = 0x8000;
 }
 
 /* PC Counter and Memory helper functions */
@@ -62,8 +62,8 @@ uint16_t *get_memory_location(uint16_t offset)
 uint16_t read_memory(uint16_t address)
 {
 	/* if (address == MR_KBSR) { */
-        /*   memory[MR_KBSR] = (1 << 15); */
-        /*   memory[MR_KBDR] = getchar(); */
+	/*   memory[MR_KBSR] = (1 << 15); */
+	/*   memory[MR_KBDR] = getchar(); */
 	/* } */
 	return memory[address];
 }
@@ -123,7 +123,7 @@ void trap_putsp()
 
 void trap_halt()
 {
-  write_memory(MCR, 0xFFFF);
+	write_memory(MCR, 0xFFFF);
 	fprintf(stdout, "\nHALTING\n");
 	fflush(stdout);
 	exit(0);
@@ -133,11 +133,11 @@ void trap_halt()
 void run_machine()
 {
 	uint16_t curr_instruction;
-        uint16_t machine_control;
-        machine_control = read_memory(MCR);
+	uint16_t machine_control;
+	machine_control = read_memory(MCR);
 
-        // Bit 15 of Machine Control Register should be 1 for
-        // the machine to run.
+	// Bit 15 of Machine Control Register should be 1 for
+	// the machine to run.
 	while (machine_control & 0x8000) {
 		// We are incrementing regs[RPC] as we are reading the value.
 		// Instructions like LD add the offsets to the incremented PC.
@@ -424,9 +424,9 @@ void trap_instruction(uint16_t instruction)
 	case TRAP_HALT:
 		trap_halt();
 		break;
-        default:
-          regs[R7] = regs[RPC];
-          regs[RPC] = read_memory(trap_vector);
-          break;
+	default:
+		regs[R7] = regs[RPC];
+		regs[RPC] = read_memory(trap_vector);
+		break;
 	}
 }
