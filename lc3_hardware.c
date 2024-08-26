@@ -123,7 +123,7 @@ void trap_putsp()
 
 void trap_halt()
 {
-	write_memory(MCR, 0xFFFF);
+	write_memory(MCR, 0x0000);
 	fprintf(stdout, "\nHALTING\n");
 	fflush(stdout);
 	exit(0);
