@@ -38,6 +38,9 @@ void initialize_hardware(void)
 {
 	regs = (uint16_t *)malloc(R_COUNT * sizeof(uint16_t));
 	memory = (uint16_t *)malloc(MEMORY_MAX * sizeof(uint16_t));
+
+        // Set Machine Control Register
+        memory[MCR] = 0x8000;
 }
 
 /* PC Counter and Memory helper functions */
@@ -120,6 +123,7 @@ void trap_putsp()
 
 void trap_halt()
 {
+  write_memory(MCR, 0xFFFF);
 	fprintf(stdout, "\nHALTING\n");
 	fflush(stdout);
 	exit(0);
@@ -129,7 +133,12 @@ void trap_halt()
 void run_machine()
 {
 	uint16_t curr_instruction;
-	while (true) {
+        uint16_t machine_control;
+        machine_control = read_memory(MCR);
+
+        // Bit 15 of Machine Control Register should be 1 for
+        // the machine to run.
+	while (machine_control & 0x8000) {
 		// We are incrementing regs[RPC] as we are reading the value.
 		// Instructions like LD add the offsets to the incremented PC.
 		// Not the PC which contained the LD instruction.
@@ -148,77 +157,58 @@ void run_machine()
 			return;
 		}
 
-		fprintf(stdout, "Curr Instruction - %d\n", curr_instruction);
-
 		switch (curr_instruction >> 12) {
 		case OP_BR:
 			branch_instruction(curr_instruction);
-			fprintf(stdout, "BR Instruction\n");
 			break;
 		case OP_ADD:
 			add_instruction(curr_instruction);
-			fprintf(stdout, "ADD Instruction\n");
 			break;
 		case OP_LD:
 			ld_instruction(curr_instruction);
-			fprintf(stdout, "LD Instruction\n");
 			break;
 		case OP_ST:
 			st_instruction(curr_instruction);
-			fprintf(stdout, "ST Instruction\n");
 			break;
 		case OP_JSR:
 			jsr_instruction(curr_instruction);
-			fprintf(stdout, "JSR Instruction\n");
 			break;
 		case OP_AND:
 			and_instruction(curr_instruction);
-			fprintf(stdout, "AND Instruction\n");
 			break;
 		case OP_LDR:
 			ldr_instruction(curr_instruction);
-			fprintf(stdout, "LDR Instruction\n");
 			break;
 		case OP_STR:
 			str_instruction(curr_instruction);
-			fprintf(stdout, "STR Instruction\n");
 			break;
 		case OP_RTI:
-			fprintf(stdout, "RTI Instruction\n");
 			fprintf(stderr, "Invalid OPCODE RTI\n");
 			return;
 		case OP_NOT:
 			not_instruction(curr_instruction);
-			fprintf(stdout, "NOT Instruction\n");
 			break;
 		case OP_LDI:
 			ldi_instruction(curr_instruction);
-			fprintf(stdout, "LDI Instruction\n");
 			break;
 		case OP_STI:
 			sti_instruction(curr_instruction);
-			fprintf(stdout, "STI Instruction\n");
 			break;
 		case OP_JMP:
 			jmp_instruction(curr_instruction);
-			fprintf(stdout, "JMP Instruction\n");
 			break;
 		case OP_RES:
-			fprintf(stdout, "RES Instruction\n");
 			fprintf(stderr, "Invalid OPCODE RES\n");
 			break;
 		case OP_LEA:
 			lea_instruction(curr_instruction);
-			fprintf(stdout, "LEA Instruction\n");
 			break;
 		case OP_TRAP:
 			trap_instruction(curr_instruction);
-			fprintf(stdout, "TRAP Instruction\n");
 			break;
 		default:
 			return;
 		}
-		debug_hardware();
 	}
 }
 
@@ -413,12 +403,9 @@ void lea_instruction(uint16_t instruction)
 void trap_instruction(uint16_t instruction)
 {
 	uint16_t trap_vector;
-
-	regs[R7] = regs[RPC];
 	trap_vector = instruction & 0xFF;
-	regs[RPC] = read_memory(trap_vector);
 
-	switch (instruction & 0xFF) {
+	switch (trap_vector) {
 	case TRAP_GETC:
 		trap_getc();
 		break;
@@ -437,5 +424,9 @@ void trap_instruction(uint16_t instruction)
 	case TRAP_HALT:
 		trap_halt();
 		break;
+        default:
+          regs[R7] = regs[RPC];
+          regs[RPC] = read_memory(trap_vector);
+          break;
 	}
 }

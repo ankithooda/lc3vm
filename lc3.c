@@ -53,8 +53,8 @@ int main(int argc, char **argv)
 {
 	// Initialize hardware
 	initialize_hardware();
-	fprintf(stdout, "Debug: Hardware Initialized\n");
-	debug_hardware();
+	//fprintf(stdout, "Debug: Hardware Initialized\n");
+	//debug_hardware();
 
 	// Load program
 	FILE *program = fopen(argv[1], "rb");
