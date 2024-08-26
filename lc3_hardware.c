@@ -88,7 +88,7 @@ void trap_out()
 void trap_puts()
 {
 	uint16_t *c = memory + regs[R0];
-	while (c) {
+	while (*c) {
 		putc((char)*c, stdout);
 		c++;
 	}

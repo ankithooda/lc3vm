@@ -1,5 +1,6 @@
 #include <stdint.h>
 
+#define R_COUNT 10
 #define MEMORY_MAX (1 << 16)
 
 enum OPCODE {
