@@ -87,12 +87,12 @@ void trap_out()
 
 void trap_puts()
 {
-	/* uint16_t c = memory[regs[R0]]; */
-	/* while (c) { */
-	/* 	putc((char *)c, stdout); */
-	/* 	c++; */
-	/* } */
-	/* fflush(stdout); */
+	uint16_t *c = memory + regs[R0];
+	while (c) {
+		putc((char)*c, stdout);
+		c++;
+	}
+	fflush(stdout);
 }
 
 void trap_in()
