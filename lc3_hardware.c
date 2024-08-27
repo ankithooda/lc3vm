@@ -61,10 +61,10 @@ uint16_t *get_memory_location(uint16_t offset)
 
 uint16_t read_memory(uint16_t address)
 {
-	/* if (address == MR_KBSR) { */
-	/*   memory[MR_KBSR] = (1 << 15); */
-	/*   memory[MR_KBDR] = getchar(); */
-	/* } */
+	if (address == KBSR) {
+	  memory[KBSR] = (1 << 15);
+	  memory[KBDR] = getchar();
+	}
 	return memory[address];
 }
 
@@ -345,7 +345,7 @@ void str_instruction(uint16_t instruction)
 	base_r = (instruction >> 6) & 0x7;
 	offset6 = extend_sign(instruction & 0x1F, 6);
 
-	memory[regs[base_r] + offset6] = regs[sr];
+        write_memory(regs[base_r] + offset6, regs[sr]);
 }
 
 void ldr_instruction(uint16_t instruction)
@@ -356,7 +356,7 @@ void ldr_instruction(uint16_t instruction)
 	base_r = (instruction >> 6) & 0x7;
 	offset6 = extend_sign(instruction & 0x1F, 6);
 
-	regs[dr] = memory[regs[base_r] + offset6];
+        regs[dr] = read_memory(regs[base_r] + offset6);
 	update_flags(dr);
 }
 
@@ -366,8 +366,7 @@ void ldi_instruction(uint16_t instruction)
 
 	dr = (instruction >> 9) & 0x7;
 	pcoffset9 = extend_sign(instruction & 0x1FF, 9);
-	regs[dr] = memory[memory[regs[RPC] + pcoffset9]];
-
+        regs[dr] = read_memory(read_memory(regs[RPC] + pcoffset9));
 	update_flags(dr);
 }
 
@@ -377,7 +376,7 @@ void sti_instruction(uint16_t instruction)
 
 	sr = (instruction >> 9) & 0x7;
 	pcoffset9 = extend_sign(instruction & 0x1FF, 9);
-	memory[memory[regs[RPC] + pcoffset9]] = regs[sr];
+        write_memory(read_memory(regs[RPC] + pcoffset9), regs[sr]);
 }
 
 void jmp_instruction(uint16_t instruction)
