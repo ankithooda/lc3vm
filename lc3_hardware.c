@@ -63,7 +63,7 @@ uint16_t read_memory(uint16_t address)
 {
 	if (address == KBSR) {
 	  memory[KBSR] = (1 << 15);
-	  memory[KBDR] = getchar();
+	  memory[KBDR] = (uint16_t)getchar();
 	}
 	return memory[address];
 }
@@ -154,8 +154,10 @@ void run_machine()
                   halt the machine.
                 */
 		if (curr_instruction == 0) {
+                        debug_hardware();
 			return;
 		}
+                printf("Curr instruction %d\n", curr_instruction >> 12);
 
 		switch (curr_instruction >> 12) {
 		case OP_BR:
@@ -209,6 +211,7 @@ void run_machine()
 		default:
 			return;
 		}
+                debug_hardware();
 	}
 }
 
