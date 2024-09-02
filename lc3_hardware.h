@@ -44,7 +44,7 @@ enum REG {
   FL_ZRO - 010
   FL_NEG - 100
  */
-enum FLAGS { FL_POS = 1, FL_ZRO = 2, FL_NEG = 5 };
+enum FLAGS { FL_POS = 1, FL_ZRO = 2, FL_NEG = 4 };
 
 enum TRAP_CODE {
 	TRAP_GETC = 0x20,

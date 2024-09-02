@@ -13,9 +13,10 @@ uint16_t *memory;
  */
 void update_flags(enum REG r)
 {
-	if (regs[r] == 0) {
+  int16_t value = regs[r];
+	if (value == 0) {
 		regs[RCOND] = FL_ZRO;
-	} else if (regs[r] > 0) {
+	} else if (value > 0) {
 		regs[RCOND] = FL_POS;
 	} else {
 		regs[RCOND] = FL_NEG;
@@ -154,10 +155,10 @@ void run_machine()
                   halt the machine.
                 */
 		if (curr_instruction == 0) {
-                        debug_hardware();
+                  //debug_hardware();
 			return;
 		}
-                printf("Curr instruction %d\n", curr_instruction >> 12);
+                //printf("Curr instruction %d\n", curr_instruction >> 12);
 
 		switch (curr_instruction >> 12) {
 		case OP_BR:
@@ -211,7 +212,7 @@ void run_machine()
 		default:
 			return;
 		}
-                debug_hardware();
+                //debug_hardware();
 	}
 }
 
@@ -346,7 +347,7 @@ void str_instruction(uint16_t instruction)
 
 	sr = (instruction >> 9) & 0x7;
 	base_r = (instruction >> 6) & 0x7;
-	offset6 = extend_sign(instruction & 0x1F, 6);
+	offset6 = extend_sign(instruction & 0x3F, 6);
 
         write_memory(regs[base_r] + offset6, regs[sr]);
 }
@@ -357,7 +358,7 @@ void ldr_instruction(uint16_t instruction)
 
 	dr = (instruction >> 9) & 0x7;
 	base_r = (instruction >> 6) & 0x7;
-	offset6 = extend_sign(instruction & 0x1F, 6);
+	offset6 = extend_sign(instruction & 0x3F, 6);
 
         regs[dr] = read_memory(regs[base_r] + offset6);
 	update_flags(dr);
